@@ -1,18 +1,44 @@
 /*静态资源加载器*/
-import {resources} from "./resources.js";
+import {
+	resources
+} from "./resources.js";
 
 class ResourceLoader {
-    constructor() {
-        let source ={};
-        Object.entries(resources).forEach(r => {
-            let image = new Image();
-            image.src = r[1];
-            let key=r[0];
-            source[key] = image;
-        })
+	constructor() {
+		this.init();
+	}
 
-        this.source = source;
-    }
+	init() {
+		//键值对
+		this.source = new Map(resources);
+		for (let [key, value] of this.source) {
+			let image = new Image();
+			image.src = value;
+			this.source.set(key, image);
+		}
+	}
+
+	/**
+	 *加载完成之后会的操作
+	 */
+	onLoaded(callback) {
+		let loadedCount = 0;
+		for(let image of this.source.values()){
+			image.onload= () => {
+				loadedCount++;
+				if(loadedCount == this.source.size){
+					callback(this.source);
+				}
+			}
+		}
+	}
+
+	static create(){
+		//使用静态方法实例化,全局唯一资源加载器只会加载一次，所以使用工厂方法
+		return new ResourceLoader();
+	}
 }
 
-export {ResourceLoader};
+export {
+	ResourceLoader
+};

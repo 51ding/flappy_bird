@@ -19,7 +19,7 @@ class ResourceLoader {
 	}
 
 	/**
-	 *加载完成之后会的操作
+	 *所有资源都加载完成之后进行的操作
 	 */
 	onLoaded(callback) {
 		let loadedCount = 0;

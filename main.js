@@ -1,8 +1,11 @@
 import {ResourceLoader} from "./js/base/resourceLoader.js";
 import {Director} from "./js/director.js";
+import {Store} from "./js/base/store.js";
+
+/* 资源类 */
 import {Background} from "./js/runtime/background.js";
 import {Land} from "/js/runtime/land.js";
-import {Store} from "./js/base/store.js";
+import {UpPencil} from "/js/runtime/upPencil.js";
 class Main {
     constructor() {
        this.canvas=document.getElementById("canvas");
@@ -21,8 +24,13 @@ class Main {
 		
 		init(){
 			this.store.put("background",Background)
-								.put("land",Land);
-			Director.getInstance().run();
+								.put("land",Land)
+								//铅笔这里保存数组
+								.put("pencils",[]);
+			let director = Director.getInstance();
+			//创建第一组铅笔
+			director.createPencil();
+	    director.run();
 		}
 }
 

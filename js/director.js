@@ -6,8 +6,9 @@ class Director{
 	
 	constructor(){
 		this.store= Store.getInstance();
-		
-		/* 游戏速度 */
+    // 游戏是否开始	
+		this.isStart = false;
+		// 游戏速度
 		this.speed=2;
 	}
 	
@@ -20,19 +21,27 @@ class Director{
 	
 	/* 行为 */
 	run(){
-		this.store.get("background").draw();
-		//先渲染铅笔，后渲染陆地
-		this.store.get("pencils").forEach(item => {
-			item.draw();
-		})
-		this.store.get("land").draw();
-		let timer = requestAnimationFrame(()=> this.run());
-		this.store.put("timer",timer);
+		if(this.isStart){
+			this.store.get("background").draw();
+			//先渲染铅笔，后渲染陆地
+			this.drawPencil();
+			this.store.get("pencils").forEach(item => {
+				item.draw();
+			})
+			this.store.get("land").draw();
+			//循环
+			let timer = requestAnimationFrame(()=> this.run());
+			this.store.put("timer",timer);
+		}
+		else{
+				cancelAnimationFrame(this.store.get("timter"));
+				//清空所有精灵
+				this.store.destory();
+		}
 	}
 	
 	/** 
 	 * 创建铅笔
-	 * 
 	 * */
 	createPencil(){
 		//上铅笔的最小高度 
@@ -45,6 +54,19 @@ class Director{
 		this.store.get("pencils").push(new UpPencil(top));
 		this.store.get("pencils").push(new DownPencil(top));
 	}
+	
+	drawPencil(){
+		/* 铅笔渲染逻辑 */
+		const pencils = this.store.get("pencils");
+		if(pencils[0].x + pencils[0].width <=0 && pencils.length == 4){
+			pencils.shift();
+			pencils.shift();
+		}
+		if(pencils[0].x < (window.innerWidth - pencils[0].width)/2　&& pencils.length ==2 ){
+			this.createPencil();
+		}
+	}
+	
 }
 
 

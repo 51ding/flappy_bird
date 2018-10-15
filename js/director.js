@@ -21,10 +21,11 @@ class Director{
 	/* 行为 */
 	run(){
 		this.store.get("background").draw();
-		this.store.get("land").draw();
+		//先渲染铅笔，后渲染陆地
 		this.store.get("pencils").forEach(item => {
 			item.draw();
 		})
+		this.store.get("land").draw();
 		let timer = requestAnimationFrame(()=> this.run());
 		this.store.put("timer",timer);
 	}
